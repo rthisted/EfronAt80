@@ -1,0 +1,34 @@
+
+\medskip
+\textbf{Notes on Efron and Thisted (1976)}
+
+Ronald Thisted
+\medskip
+
+The maximum likelihood calculation is tricky.  Consider just the first row of Table~3, which only looks at the first five word types (those seen once, twice, up to five times). The likelihood is 
+
+$$
+L(p_1, p_2, \ldots, p_5) = p_1^{n_1}p_2^{n_2}p_3^{n_3}p_4^{n_4}p_5^{n_5}, \eqno(1)
+$$
+where
+$$p_x = c{\Gamma(x+\alpha)\over x!\Gamma(1+\alpha)}\gamma^{x-1}, \eqno(2)$$
+and where $c$ is the constant that makes $\sum_1^5 p_x=1$.
+Maximizing the likelihood with respect to $\alpha$ and $\gamma$ is equivalent to maximizing the logarithm of the likelihood, which is considerably easy to work with.  Notice that $c^N$ can be factored out of the likelihood, so that the value of $c$ doesn't matter, so long as in the end the estimated probabilities add up to one.
+
+The log likelihood then looks like this:
+$$ \ell(p_1, p_2, \ldots, p_5) = \ell(\alpha, \gamma) = \sum_{x=1}^5 n_x \ln(p_x), \eqno(3)
+$$           
+where each $p_x$ is written in terms of $\alpha$ and $\gamma$.  Since
+$$ p_x = \left(x+\alpha \over x+1\right)\gamma \cdot p_{x-1}, \eqno(4)$$
+for any given values for $\alpha$ and $\gamma$, one can take $p_1=1$, calculate $p_2$ through $p_5$ using the recursion stated above, calculate $c=\sum p_x$, and then divide each of the $p_x$ values by $c$ to make them sum to one (as they are probabilities).
+With the $p_x$ values corresponding to $\alpha$ and $\gamma$, the next step is to calculate the log likelihood.
+
+One approach to finding the maximum likelihood estimates for $\alpha$ and $\gamma$ is by iterative search.  Select starting values such as $\alpha=0$ and $\gamma=1$ for the two parameters.  Without changing $\gamma$, calculate the log likelihood for different choices of $\alpha$.  When the log likelihood stops increasing, take smaller steps within the interval containing the maximum until you get adequate precision.  Then fix $\alpha$ at this new value and then proceed to do the same thing with $\gamma$.  When this step converges, hold $\gamma$ at its new value and repeat the process with $\alpha$.  Alternate between the two parameters until you have adequate precision. 
+
+Unfortunately, this process converges very slowly to the maximum value, in part because the likelihood function is very flat near the maximum.
+
+Other approaches, such as Fisher scoring or Newton-Raphson, can optimize for both $\alpha$ and $\gamma$ at the same time, but they require derivatives of the log likelihood function.  There are also methods that numerically approximate the derivatives.  I believe that the ``Solver'' functions in Microsoft Excel use that approach.
+
+Here is an approach to doing the calculations of the log-likelihood in Excel. First, create two cells that hold $\alpha$ and $\gamma$, (a) a column with $x$ values (1 through 5, or 40), (b) a column of $n_x$ values, (c) a column with values proportional to equation~(2), calculated using the recursion of equation~(4), a cell that sums the entries in that column, (d) a column that divides column (c) by the sum--these are the estimated probabilities $\hat p_x$, (e) a column with that row's contribution to the log likelihood ($n_x \ln(\hat p_x)$), and then the sum of column~(e), which gives the log-likelihood.  By changing the values for $\alpha$ and $\gamma$, the log likelihood is automatically updated.
+
+There is an {R} package, \texttt{https://r-how.com/packages/preseqR}, that may do some (or all) of the negative binomial fitting to data such as these, although I haven't tried it.

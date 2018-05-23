@@ -1,0 +1,77 @@
+\begin{frame}
+    \frametitle{A More Satisfactory Approach}
+	
+	\begin{itemize}
+		\item Write scripts for widely-used software
+		\item In my case, Stata
+		\item Points in favor:
+		\begin{itemize}
+			\item Outstanding numerics, graphics, data management, scripting
+			\item Easy to do general maximum likelihood calculations
+			\item Widely used by econometricians, epidemiologists, biostatisticians
+			\item Professionally maintained, version controlled execution
+			\item (Mostly) open source
+			\item Can get standard errors for ML estimates
+		\end{itemize}
+		\item Points against:
+		\begin{itemize}
+			\item Proprietary and somewhat expensive
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{MLE calculations in Stata}
+	\begin{itemize}
+		\item Write a script that returns the likelihood given parameters
+		\item Write a wrapper the reads the input data, invokes ML program, loops over $x_0$ values
+	\end{itemize}
+	\bigskip
+	\begin{table}
+		\centering
+		\input{../Manuscripts/StataMLE-Table3-origdata}
+		\caption{MLEs using Stata's \texttt{ml} program for maximum likelihood calculation, with the user-written likelihood specification script \texttt{et.do}.}
+	\end{table}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stata vs Excel}
+	\strut
+	\bigskip
+	
+	Stata and Excel agree remarkably well:
+	\begin{itemize}
+		\item $\hat\alpha$ values agree to~1 unit in 4th decimal place
+		\item $\hat\gamma$ values agree to four decimal places
+		\item Stata produces very slightly smaller LR $\chi^2$ values
+	\end{itemize}
+	\bigskip
+	
+	So, how do the ET 1975 calculations hold up?
+	\bigskip
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stata 2018 vs BASIC 1975}
+	\strut
+	\medskip
+	
+	Not badly, but certainly not to the precision suggested:
+	\bigskip
+	\begin{table}
+		\centering
+\begin{tabular}{rrrrrr}
+$x_0$ & $\sum n_x$ & $\hat\alpha$ & $\hat\gamma$ & $\hat\beta$ & $\chi_{x_0-3}^2$\\[3mm]
+ 5  & 23517  & -0.383\z{5}  &  0.9795 &   47.8\z{0} &   0.027\\
+10  & 26305  & -0.390\z{2}  &  0.988\z{3} &   8\z{4.50} &   2.02\z{2}\\
+15  & 27521  & -0.38\z{68}  &  0.98\z{54} &   \z{67.44} &   3.\z{752}\\
+20  & 28266  & -0.3\z{895}  &  0.987\z{2} &   7\z{7.19} &   8.8\z{22}\\
+30  & 29147  & -0.394\z{5}  &  0.9899 &   9\z{8.19} &  16.87\z{3}\\[+3mm]
+40  & 29660  & -0.39\z{73}  &  0.99\z{12} &  1\z{12.22} &  30.\z{217}\\
+ET-40 & 29660  & -0.3954  &  0.9905 &  104.26 &  30.437\\
+\end{tabular}
+		\caption{MLEs using Stata \texttt{ml} for maximum likelihood calculation, \z{with differences from ET Table~3}.}
+	\end{table}
+\end{frame}

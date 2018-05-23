@@ -1,0 +1,87 @@
+% Example showing standard errors and auxiliary calculations from Stata for x_0=40
+
+\parindent=1em
+
+Stata's \texttt{ml} command is a general-purpose optimizer that is designed to provide standard inferential tools in a standardized format as a by-product.  The program scripts \texttt{et.do} and \texttt{et1.do} provide the code needed to calculate the log likelihood for the conditional negative binomial model considered in Section~3 of \citet{Efron:1976zs}, the former parameterized using $\beta$ and the latter parameterized using $\gamma$.
+
+The tables in section~\ref{sec:computer_programs} were produced by a script that suppressed the standard output from each individual estimation command, instead compiling and printing only the tabular results corresponding to Table~3 of \citeauthor{Efron:1976zs}.  To illustrate the utility of the approach using Stata, the output below shows estimates of $\alpha$, $\beta$, and $\gamma$, together with their standard errors and confidence intervals.
+
+Here are the results for $x_0=40$, the setting used for several purposes in ET.  Lines that start with a period show inputs to Stata.  In this example we explicitly provide initial values to the \texttt{ml} maximizer, but using Stata's defaults produce virtually the same result, differing only by one unit in the sixth decimal place of $\hat\alpha$.  The estimate for $\alpha$ is $\hat\alpha=-0.3973$, and its standard error is $0.006$.  The two estimates are associated in the output below with \texttt{eq1:\_cons} ($\alpha$) and \texttt{eq2:\_cons} ($\beta$).
+
+{\obeylines\obeyspaces
+\begin{verbatim}
+. ml model d0 et (nx=) () in 1/40
+. ml init eq1:_cons=-0.4 eq2:_cons=50
+. ml maximize, nolog
+
+                                                Number of obs     =         40
+                                                Wald chi2(0)      =          .
+Log likelihood = -61615.249                     Prob > chi2       =          .
+
+------------------------------------------------------------------------------
+          nx |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+eq1          |
+       _cons |  -.3973074   .0059839   -66.40   0.000    -.4090355   -.3855792
+-------------+----------------------------------------------------------------
+eq2          |
+       _cons |   112.2214   18.51752     6.06   0.000     75.92778    148.5151
+------------------------------------------------------------------------------
+
+. scalar gamma = _b[#2:_cons]/(1+_b[#2:_cons])
+. display "Delta-hat_ml(1)= " %8.0f -nx[1]*((1+gamma)^(-_b[_cons]) -1)/(_b[_cons]*gamma) "  Gamma= " %7.5f gamma
+Delta-hat_ml(1)=    11490  Gamma= 0.99117
+
+. // get standard error for gamma hat and for Delta-hat(1)
+. nlcom _b[#2:_cons]/(1+_b[#2:_cons])
+
+       _nl_1:  _b[#2:_cons]/(1+_b[#2:_cons])
+
+------------------------------------------------------------------------------
+          nx |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _nl_1 |   .9911678   .0014445   686.15   0.000     .9883365     .993999
+------------------------------------------------------------------------------
+\end{verbatim}
+\newpage
+Usefully, Stata can not only calculate $\hat\Delta(1)$, but can also obtain its standard error via the delta method.
+
+\begin{verbatim}
+. nlcom -nx[1]*((1+gamma)^(-_b[_cons]) -1)/(_b[_cons]*gamma)
+
+       _nl_1:  -nx[1]*((1+gamma)^(-_b[_cons]) -1)/(_b[_cons]*gamma)
+
+------------------------------------------------------------------------------
+          nx |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _nl_1 |   11489.66   24.75408   464.15   0.000     11441.15    11538.18
+------------------------------------------------------------------------------
+\end{verbatim}
+}
+
+By repeating the calculation parameterizing using $\gamma$ ($=\beta/(1+\beta)$) instead of $\beta$, we obtain standard errors for $\hat\gamma$ as well.  Note that the log likelihood is the same for both parametrizatoins.  Because $\gamma$ is constrained to be strictly less than one (by its relationship to $\beta$), and because our estimates for $\gamma$ are near that upper boundary, we would expect the computation based on $\beta$ (which is unconstrained) to be somewhat more stable numerically, and for that reason our computations in the text are based on the $\beta$ parameterization.
+
+\begin{verbatim}
+. // repeat using gamma parameterization
+. ml model d0 et1 (nx=) () in 1/40
+
+. ml maximize, nolog
+initial:       log likelihood =     -<inf>  (could not be evaluated)
+feasible:      log likelihood = -96277.713
+rescale:       log likelihood = -96277.713
+rescale eq:    log likelihood = -85253.513
+
+                                                Number of obs     =         40
+                                                Wald chi2(0)      =          .
+Log likelihood = -61615.249                     Prob > chi2       =          .
+
+------------------------------------------------------------------------------
+          nx |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+eq1          |
+       _cons |   -.397306   .0059838   -66.40   0.000     -.409034   -.3855779
+-------------+----------------------------------------------------------------
+eq2          |
+       _cons |   .9911673   .0014445   686.15   0.000     .9883361    .9939986
+------------------------------------------------------------------------------
+\end{verbatim}

@@ -1,0 +1,220 @@
+% !TEX TS-program = pdflatex
+%
+% Created by Ronald Thisted on 2018-04-24.
+% Copyright (c) 2018 .
+\documentclass[
+  letterpaper, % paper size.
+  11pt, % type size.
+  % article,
+  oneside,  % all pages setup with the same margins.
+  % twoside,    % margins change from recto to verso pages.
+  onecolumn,  % only one column of text on a page.
+  % openright,  % each chapter will start on a recto page.
+  % openleft, % each chapter will start on a verso page.
+  openany,  % chapters may start on either recto or verso pages.
+  article
+]{memoir}
+
+\epigraphfontsize{\small\itshape}
+\setlength\epigraphwidth{8cm}
+\setlength\epigraphrule{0pt}
+
+% Enable hyperlinking/hypertext and PDF metadata
+\usepackage{hyperref}
+
+\usepackage[authoryear,round,longnamesfirst]{natbib}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{geometry}
+
+\newlength{\parindentsave}
+
+\hypersetup
+{
+  pdftitle   = {Title},
+  pdfauthor  = {Author},
+  pdfsubject = {Subject}
+}
+
+\title{Reproducing Shakespeare\\{\large In honor of Bradley Efron's 80th Birthday}}
+\author{Ronald A. Thisted\\The University of Chicago}
+
+\usepackage{lipsum} % to support fake lorem ipsum text
+
+\begin{document}
+
+\frontmatter
+
+\maketitle
+
+\begin{abstract}
+	\input{abstract}
+\end{abstract}
+\clearpage
+
+\tableofcontents*
+\clearpage
+
+\mainmatter
+
+\chapter[Introductory Matter]{Introduction}
+\epigraphfontsize{\small\itshape}
+\input{epigraph}
+
+	In 1976, Efron and I published a paper in \textit{Biometrika} that explored aspects of the unseen species problem, \textit{i.e.,} how to estimate the number of unseen types based on the distribution of counts of types that had been observed \citep{Efron:1976zs}, henceforth ET.  The motivating---and captivating---example we used was to estimate the number of words that Shakespeare knew but which he had never been seen to use in his published corpus of plays and poetry.  The paper generated considerable interest at the time, and a follow-on paper some ten years later concerning potential Shakespearean authorship of a (not very good) poem that had recently been discovered led to a minor industry in developing quantitative methods to judge matters of Shakespearean authorship.  Originally viewed as frivolous by serious scholars of Shakespeare, ``stylometrics'' has come to have a recognized place in literary debate. [Mention \textit{Federalist}, Elliott/Valenza, Foster].
+	
+	In the ensuing years, interest in our original paper has been unabated, and it has continued to be cited---some 478 times as of May 2018 according to Google Scholar.  Over the years a number of readers have contacted one or the other of us to suggest what we should have done, or to inform us of the logical flaws in our analysis, or most commontly, to ask questions about what we did or how we did it.  We tried to respond to simple queries as best we could, and where we could not each of us would suggest to our correspondents that they contact the other.
+	
+	Last year Brad received a query from a Chinese student who sought to understand how we got some of the results we reported in the 1976 paper, and Brad suggested that the student write to me.  The main query was how we obtained the parameter estimates for the negative binomial model that we reported in Table~3.  Surely, I thought, I could whip together a few lines of code that I could send to our correspondent to help him on his way.  I soon discovered that it wasn't any longer quite obvious just what that negative binomial model consisted of---that is, the likelihood to maximize wasn't immediately obvious, even from reading our pellucid article.  It also wasn't a straightforward task to get maximum likelihood estimates from any of the plausible candidate models.  And there was a cryptic comment in the manuscript whose import also wasn't immediately apparent: ``Table~3 shows the maximum likelihood fits, obtained by iterative search for various choices of $x_0$.''
+	
+	The challenge of reproducing a key ingredient of our 1976 paper evokes the current focus on ``reproducible research,'' a concept introduced to the statistics community by Buckheit and Donoho in their influential \citeyear{Buckheit:1995hl} paper, which is related to Donald Knuth's notion of ``literate programming'' \citep{knuth1984literate}, and one for which I and many others have advocated as a fundamental building block for quality science.  Had Brad and I created a reproducible manuscript when we were writing our paper, in 2018 we would have the benefit of our 1976 selves both telling us and showing us exactly what they had done.
+	
+	It seemed like a fitting project to explore the answers to two questions: (1) what would a reproducible manuscript for the Shakespearean vocabulary paper look like today, and (2) what challenges might thwart achieving a result that would still be useful some $40+$ years after the original writing.
+	
+\chapter[Elements of reproducibility]{Elements of reproducibility}
+
+	In this project, we take ``reproducibility'' to mean the ability to reproduce, from the original data, the main computations, tables, and figures from a report of research work.  Ideally, a compendium of the artifacts that enable a work to be reproduced, along with the work itself, will be available to the scientific community to check, to modify, and to build upon.
+	
+There are (at least) four components of a research project compendium that affect the ability for the final article to be reproduced:
+	\begin{enumerate}
+		\item the computer programs or scripts used for calculation,
+		\item the underlying data,
+		\item the hardware and operating system under which those programs were run, and
+		\item the choices of inputs to the calculations, and the process by which those choices were made.
+	\end{enumerate}
+	
+	  In our case we shall focus on a subset of the main calculations and figures from \citet{Efron:1976zs}. In the Shakespeare case, we are up against some challenges in each of these domains listed above, however in this talk we shall focus primarily on the first of these factors, with a few words reserved for the other three items.  Specifically, we shall take as given the raw data reported in ET, and then undertake to reproduce calculations in the paper conditional on the reported data.
+	  
+	  The data, programs, and results of this investigation are available from a GitHub repository (\texttt{https://github.com/rthisted/EfronAt80}), from which they can be freely accessed.
+	
+\input{Section/computerprograms}
+\input{Section/data}
+\input{Section/hardware}
+\input{Section/process}
+
+\chapter[]{A simple unbiased estimator}
+
+The maximum likelihood estimates for the Fisher negative binomial model, which serves as a benchmark for many of the results in ET, are presented in Table~3.  They, and the calculations leading up to them, will be the focus for the rest of this paper.
+
+The very first nontrivial calculation in ET is expression~(2.5), which provides a simple unbiased estimate for $\hat\Delta(1)$, the expected number of new words to be seen in a newly-discovered corpus of work equal in size to the corpus of Shakespeare that we already have in hand.  The expression reduces to
+\begin{equation}
+	\hat\Delta(1) = n_1-n_2+n_3-n_4+\ldots\;,
+	\label{eq:unbiased}
+\end{equation}
+and expression~(2.5) asserts that $\hat\Delta(1)=11430$.
+
+We report the first 100 values of $n_x$ in our Table~1. As it turns out, however, the alternating sum of those values turns out to be 11486, a figure that is about half a percent larger that the one reported in the paper!
+
+What is going on?  One possibility is that we used fewer than the 100 values in Table~1 in calculating (\ref{eq:unbiased})  However, none of the partial sums
+$$
+s_m=\sum_{x=1}^m (-1)^{x+1} n_x$$
+equals 11430.  
+
+A second possibility is that we actually had \textit{all} of the $n_x$ values (up to $x=27457$)in hand and that we used them all to obtain our estimate.  However, if we append the frequency counts for $x>100$ to those in Table~1, expression (\ref{eq:unbiased}) turns out to be 11543.
+
+A third possibility is that we calculated $\hat\Delta(1)$ using frequency counts from an early version of the dataset that contained errors, that we subsequently corrected the errors in Table~1, but we didn't recalculate $\hat\Delta(1)$.  In fact, I discovered a hand-written version of Table~1 in my files, and three of the counts in that version differ from the counts reported in Table~1 of ET.  The hand-written table is shown in Figure~\ref{fig:hand-Table1}.  The hand-written entries that differ are $n^*_6=887$ (instead of~837), $n^*_{94}=12$ (instead of~7), and $n^*_{97}=13$ (instead of~15).  When expression~(\ref{eq:unbiased}) is applied to the hand-written table, the resulting estimate is $\hat\Delta^*(1) = 11429$, almost---but not exactly---the value of 11430 reported in ET!
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{Photos/Handwritten-table-1-version.pdf}
+	\caption{Probably an early version of Table~1 from ET, which differs in three locations from the from the published text (at $x=6, 94, 97$).}
+	\label{fig:hand-Table1}
+\end{figure}
+
+\begin{quotation}
+	\textit{Lesson.}  Archive data sets and version control them, and run all scripts only on the final version.
+\end{quotation}
+
+A fourth possibility is that the calculation was done by hand using a calculator rather than computer program.  In that case, one or more frequencies could have been entered in error.  For instance, if $x_{33}=56$ were accidentally omitted from the calculation---an error easily done when doing the calculation by hand---then the end result for $\hat\Delta_{100}(1)$ would be exactly 11430.
+
+A fifth possiblity also posits hand calculation.  The person doing the calculation could have lost track of the alternating sign parity at some point.  Specifically, if instead of subtracting $n_{38}$ from the running sum, $n_{38}$ were added instead, and then $n_{39}$ subtracted, $n_{40}$ added, and so forth, then the resulting calculation would again produce 11430 exactly.
+
+Note, too, that as $x_0$ increases, the values of $\hat\Delta_x(1)$ oscillate (see Figure~\ref{fig:delta1hat}).  This suggests that a smoothed version, say the average of $\hat\Delta_{99}(1)$ and $\hat\Delta_{100}(1)$ would be superior.  So a fifth possibility is that we did some smoothing and forgot to mention it in the paper.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=3in]{../compendium/Figures/delta1hat.pdf}
+	\caption{As $x$ increases, $\hat\Delta_x(1)$ oscillates.  The solid line is at $\hat\Delta(1)=11430$, the figure cited in the text of ET.  Values for $x<5$ are omitted to show detail.}
+	\label{fig:delta1hat}
+\end{figure}
+
+In fact, the values for $\hat\Delta_x(1)$ for $x$ near $x_0=40$---a choice used repeatedly later in the paper---are reasonably close to 11430; the average of $\hat\Delta_{37}(1)$ and $\hat\Delta_{38}(1)$ is 11433.5, and the average of $\hat\Delta_{39}(1)$ and $\hat\Delta_{40}(1)$ is 11428.
+
+In my view, the most likely explanation for the error in expression~(2.5) of ET is that it arose in the process of hand calculation, with a parity error being the simplest explanation.  The Stata script with the calculations carried out to support the explorations in this section is reproduced in Appendix~\ref{cha:simple_unbiased_estimate_for_delta_1}.
+
+So in the end, if 11430 is actually an error and the correct number is 11486, what difference would it make to the rest of the ET paper?  The answer is not much, except that the Fisher negative binomial estimate that we report (using $x_0=40$) is 11483, virtually identical to the simple unbiased estimator based on $x_0=100$ alternating sums!
+
+\chapter[]{The Fisher negative binomial model} % (fold)
+\label{cha:the_fisher_negative_binomial_model}
+
+So let's move on to the heart of ET, our study of a negative binomial model for species counts advanced by Fisher.  These are some notes that I wrote to the Chinese student whose query initiated this inquiry, pointing out some tips in dealing with the somewhat tricky maximum likelihood calculation.
+
+The calculation is not, actually, a straightforward negative binomial problem.  Rather, the problem is to maximize a multinomial likelihood where the probabilities are proportional to the parameterized negative binomial.  (Equivalently, we are maximizing a conditional negative binomial likelihood, conditional on observing only $1 \le x \le x_0$).  Norming these probabilities to sum to one introduces the trickiness.
+
+\input{gou-latex}
+% chapter the_fisher_negative_binomial_model (end)
+
+\chapter{Notes on additional computations} % (fold)
+\label{cha:notes_on_additional_computations}
+
+	Discussion of issues related to Tables~4 thorugh~6, especially the linear programming software issue.
+	
+% chapter notes_on_additional_computations (end)
+
+\newpage
+\appendix
+
+\chapter{BASIC MLE program} % (fold)
+\label{cha:basic_mle_program}
+{\footnotesize\parindent=0pt \obeylines \texttt{\input{../compendium/Programs/mle.bas.txt}}
+\parindent=1em
+% chapter basic_mle_program (end)
+
+\newpage
+\chapter{Stata negative binomial log likelihood} % (fold)
+\label{cha:stata_negative_binomial_log_likelihood}
+{\footnotesize\parindent=0pt \obeylines\obeyspaces \texttt{\verbatiminput{../compendium/Analysis/et.do}}
+% chapter stata_negative_binomial_log_likelihood (end)
+
+\newpage
+\chapter{Stata Table 3 reproduction} % (fold)
+\label{cha:stata_table_3_reproduction}
+{\footnotesize\parindent=0pt \obeylines\obeyspaces \texttt{\verbatiminput{../compendium/Analysis/table3mlFromTable1.do}}
+% chapter stata_table_3_reproduction (end)
+
+\newpage
+\chapter{Example of Stata \texttt{ml} output} % (fold)
+\label{cha:stata_example}
+\input{StataExample}
+% chapter stata_example (end)
+
+\newpage
+\chapter{Simple unbiased estimate for $\Delta(1)$} % (fold)
+\label{cha:simple_unbiased_estimate_for_delta_1}
+{\footnotesize\parindent=0pt \obeylines\obeyspaces \texttt{\verbatiminput{../compendium/Analysis/Equation2.5.do}}
+% chapter simple_unbiased_estimate_for_delta_1 (end)
+
+% \part{Memoir Supported Part I}
+% \chapter[Chapter 1 TOC entry][Chapter One Heading]{Chapter One}
+% \lipsum[1-13]
+% \chapter{Chapter Two}
+% \lipsum[1-14]
+% \part{Memoir Supported Part II}
+% \chapter{Another Part, Another Chapter}
+% \lipsum[1-14]
+% \appendix
+% \part{Appendices go here}
+% \chapter{Appendix I am}
+% \lipsum[1-9]
+% \chapter{Because I am appended}
+% \lipsum[1-11]
+
+\backmatter
+
+% Bibliography goes here
+% ----------------------
+
+\bibliographystyle{plainnat}
+\bibliography{../References/Efron80}
+
+\end{document}

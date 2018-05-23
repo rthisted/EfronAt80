@@ -1,0 +1,128 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+% \documentclass[handout]{beamer} % This version collapses all overlays
+% \usepackage{pgfpages}
+% \mode<handout>{\setbeamercolor{background canvas}{bg=black!3}}
+% \pgfpagesuselayout{4 on 1}[letterpaper,border shrink=5mm, landscape]
+% % \pgfpagesuselayout{8 on 1}[letterpaper,border shrink=5mm]
+%% This is the file main.tex
+
+\frenchspacing
+% \beamertemplatenavigationsymbolsempty
+\newcommand{\E}{\mbox{E}}
+\newcommand{\Var}{\mbox{Var}}
+\newcommand{\z}[1]{{\color{RedOrange}#1}}
+% \newcommand{\newblock}{}
+
+\usetheme{Singapore}
+% \usetheme{Montpellier}
+% \usetheme{Berlin}
+% \usetheme{Malmoe}
+
+\mode<presentation>
+{
+  % \usetheme{Warsaw}
+  % or ...
+
+  % \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+\usepackage{natbib}
+\usepackage[english]{babel}
+% \usepackage[latin1]{inputenc}
+% \usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[]
+{Reproducing Shakespeare}
+\subtitle
+{In honor of Bradley Efron's 80th birthday}
+
+\author{Ronald A. Thisted}
+% \author{R. A. Thisted}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[The University of Chicago] % (optional, but mostly needed)
+{
+  Departments of Statistics and Public Health Sciences\\
+  The University of Chicago
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date
+{24 May 2018}
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left out. 
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{GPS}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% \section{Outline}
+\begin{frame}
+  \frametitle{Roadmap}
+  \tableofcontents
+\end{frame}
+
+	\input{Slides/Estimating-Shakespeare-vocab}
+\section[Repro Res]{Reproducible research}
+	\input{Slides/ReproResearchElements}
+\section[S's vocabulary]{Estimating Shakespeare's vocabulary}
+	\input{Slides/Shakespeare-Model-Basic}
+	\input{Slides/ML-estimates-ET-Table3}
+\section[GitHub 1976]{The Shakespeare ``GitHub Repository''}
+	\input{Slides/GithubForET1976}
+	\input{Slides/TheETData}
+\section[Then]{Reproducing Results from ET 1976---Then}
+	\input{Slides/MLE-bas-photo}
+	\input{Slides/BASIC-pgm-txt}
+	\input{Slides/Wang2200Photo}
+	\input{Slides/GoodNews-BadNews}
+	\input{Slides/MLE-bas-output-photo}
+	\input{Slides/MLE-bas-Table3}
+\section[Now]{Reproducing Results from ET 1976---Now}
+	\input{Slides/AdviceToASupplicant}
+	\input{Slides/StataWorks}
+	\input{Slides/WhatDifference}
+\section[Data]{And what about the data?}
+	\input{Slides/DataIssues}
+\section[Lessons]{Lessons for the next 40 years}
+	\input{Slides/Lessons}
+\section[Finally]{Concluding remarks}
+	\input{Slides/InConclusion}
+
+%	\input{Slides/}
+
+
+\bibliographystyle{plainnat}
+\begin{frame}
+    \frametitle{Useful References}\tiny
+    \bibliography{../References/Efron80}   
+\end{frame}
+\nocite{Spevack:1968qd,Efron:1976zs,knuth1984literate,Gani:1976rg,Buckheit:1995hl}
+
+\end{document}
+
