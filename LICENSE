@@ -19,3 +19,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+The license above applies to the contents of the following folders in this
+repository:
+   compendium/Analysis
+   compendium/Data
+   compendium/Programs
+   
+The remaining contents of this repository are licensed under a Creative Common
+Attribution License CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/legalcode).  
