@@ -1,16 +1,17 @@
 \begin{frame}
 	\frametitle{Lessons concerning reproducibility}
 	
-	Components: {\color{ForestGreen}data, programs, hardware and OS, parameter choices}
-	\bigskip
-	
+\begin{itemize}
+	\item Because {\color{ForestGreen}data sets, programs, computing environment, parameter choices} evolve:
 	\begin{itemize}
-		\item Data set provenance is important to document
-		\item Documentation written today will repay itself many times over tomorrow (or 40 years hence)
-		\item Version control tools with good repository management (such as \texttt{git} with GitHub) are essential \textit{especially for data sets}
-		\item Computer environments change over time; repository tune-up every few years may be necessary.  There won't always be a Wang~2200 emulator available.
-		\item Programs that require tuning parameters won't reproduce results unless \textit{the settings used in the published product are preserved.}
-		\item A narrative compiled as the work progresses and preserved as a ``lab notebook'' can be invaluable in reproducing both what was done, and why
+		\item Need to track and preserve successive versions
+		\item Need archived snapshot linking specific data, program versions to specific versions of the manuscript
+		\item Good version control tools make this possible
 	\end{itemize}
-	
+	\item Programs are not enough; need to know what they were trying to do (and why)
+	\item Programs that require tuning parameters won't reproduce results unless \textit{the settings used in the published product are preserved.}
+	\item Archiving contemporaneous notes can help immensely.
+	\item Reproducibility decays with time. (There won't always be a Wang 2200 emulator). Repositories need regular tune-ups.
+\end{itemize}	
 \end{frame}
+
